@@ -1,0 +1,16 @@
+version: '2'
+services:
+    virtual_library_gateway-mongodb:
+        image: mongo:3.4.10
+        ports:
+            - "27017:27017"
+        command: mongos --configdb virtual_library_gateway-mongodb-config
+    virtual_library_gateway-mongodb-node:
+        build:
+            context: .
+            dockerfile: mongodb/MongoDB.Dockerfile
+        command: mongod --replSet rs1 --noprealloc --smallfiles
+    virtual_library_gateway-mongodb-config:
+        image: mongo:3.4.10
+        container_name: virtual_library_gateway-mongodb-config
+        command: mongod --noprealloc --smallfiles --configsvr --dbpath /data/db
